@@ -494,6 +494,16 @@ function initPresets() {
 }
 
 function bindEvents() {
+  // === COLLAPSIBLE SECTIONS ===
+  document.addEventListener("click", (e) => {
+    const header = e.target.closest(".section-header");
+    if (!header) return;
+    const section = header.closest(".section");
+    if (section) {
+      section.classList.toggle("collapsed");
+    }
+  });
+
   // Delegated clicks on option buttons
   document.addEventListener("click", (e) => {
     const btn = e.target.closest(".option-btn");
@@ -2017,8 +2027,8 @@ function updateAll() {
   // JSON
   $("jsonOutput").textContent = JSON.stringify(buildJson(), null, 2);
 
-  // Check conflicts
-  checkConflicts();
+  // Check conflicts (already applied above)
+  // checkConflicts();
 }
 
 // =============================================
