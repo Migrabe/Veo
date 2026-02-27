@@ -103,73 +103,14 @@ app.post("/api/translate", async (req, res) => {
   }
 });
 
-// --- API: enhance (Groq-powered when GROQ_API_KEY is set)
+// --- API: enhance (Customized/Detached)
 app.post("/api/enhance", async (req, res) => {
   const text = String(req.body?.text ?? "").trim();
-  if (!text) return res.status(400).json({ error: "Empty text" });
-
-  const groqKey = process.env.GROQ_API_KEY;
-  if (!groqKey) {
-    // No key configured — return text unchanged
-    return res.json({ text });
-  }
-
-  try {
-    const systemPrompt = req.body?.systemPrompt || `You are a professional video prompt engineer.
-Expand this scene description into a detailed visual prompt.
-Structure: [Subject/Character details] + [Environment/Location] + [Lighting/Atmosphere] + [Action/Pose].
-Keep it concise but vivid (under 150 words). Write ONLY the improved prompt.
-Original idea: "${text}"`;
-
-    const r = await fetch("https://api.groq.com/openai/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${groqKey}`,
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        model: "llama-3.3-70b-versatile",
-        messages: [{ role: "user", content: systemPrompt }],
-        temperature: 0.7,
-        max_tokens: 1000
-      })
-    });
-
-    if (!r.ok) {
-      const errBody = await r.text();
-      console.error("Groq API error:", r.status, errBody);
-      return res.json({ text }); // fallback to original
-    }
-
-    const data = await r.json();
-    const enhanced = data.choices?.[0]?.message?.content || text;
-    res.json({ text: enhanced });
-  } catch (e) {
-    console.error("Enhance error:", e.message);
-    res.json({ text }); // fallback to original on error
-  }
+  // Detached Groq logic. Returns text unchanged.
+  res.json({ text });
 });
 
-// --- API: n8n forwarder (stub)
-app.post("/api/n8n", async (req, res) => {
-  try {
-    // Implement your webhook URL in env var N8N_WEBHOOK_URL
-    const webhook = process.env.N8N_WEBHOOK_URL;
-    if (!webhook) return res.status(501).json({ error: "N8N_WEBHOOK_URL not set" });
-
-    const payload = req.body ?? {};
-    const r = await fetch(webhook, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload)
-    });
-
-    const txt = await r.text();
-    res.status(r.status).send(txt);
-  } catch (e) {
-    res.status(500).json({ error: "n8n forward failed", details: String(e?.message ?? e) });
-  }
-});
+// --- API: n8n forwarder (REMOVED)
 
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);

@@ -10,7 +10,10 @@
         "color": "var(--red)",
         "background": "rgba(255,118,117,0.1)"
       },
-      "action": { "type": "call", "name": "resetAll" }
+      "action": {
+        "type": "call",
+        "name": "resetAll"
+      }
     },
     "translate": {
       "label": "Перевести на EN",
@@ -20,7 +23,10 @@
         "padding": "6px 14px",
         "fontSize": ".82em"
       },
-      "action": { "type": "call", "name": "translateScene" }
+      "action": {
+        "type": "call",
+        "name": "translateScene"
+      }
     },
     "enhance": {
       "label": "Улучшить AI",
@@ -32,7 +38,10 @@
         "color": "var(--accent-k)",
         "borderColor": "rgba(0,212,255,0.3)"
       },
-      "action": { "type": "call", "name": "enhancePrompt" }
+      "action": {
+        "type": "call",
+        "name": "enhancePrompt"
+      }
     },
     "seed-random": {
       "label": "Random",
@@ -54,27 +63,41 @@
     },
     "format-flat": {
       "label": "Flat (рекомендуется)",
-      "attrs": { "data-format": "flat" },
-      "action": { "type": "call", "name": "setPromptFormat", "args": ["flat"] }
+      "attrs": {
+        "data-format": "flat"
+      },
+      "action": {
+        "type": "call",
+        "name": "setPromptFormat",
+        "args": [
+          "flat"
+        ]
+      }
     },
     "format-structured": {
       "label": "Structured",
-      "attrs": { "data-format": "structured" },
-      "action": { "type": "call", "name": "setPromptFormat", "args": ["structured"] }
+      "attrs": {
+        "data-format": "structured"
+      },
+      "action": {
+        "type": "call",
+        "name": "setPromptFormat",
+        "args": [
+          "structured"
+        ]
+      }
     },
     "format-midjourney": {
       "label": "Midjourney",
-      "attrs": { "data-format": "midjourney" },
-      "action": { "type": "call", "name": "setPromptFormat", "args": ["midjourney"] }
-    },
-    "send-n8n": {
-      "label": "Отправить в n8n",
-      "icon": "🚀",
-      "styles": {
-        "background": "linear-gradient(45deg, #FF6B6B, #F06595)",
-        "color": "white",
-        "border": "none",
-        "fontWeight": "bold"
+      "attrs": {
+        "data-format": "midjourney"
+      },
+      "action": {
+        "type": "call",
+        "name": "setPromptFormat",
+        "args": [
+          "midjourney"
+        ]
       }
     },
     "copy-prompt": {

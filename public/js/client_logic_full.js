@@ -2760,24 +2760,9 @@ Keep it concise but vivid (under 150 words). Write ONLY the improved prompt.
 Target Model: ${currentModel}
 Original idea: "${text}"`;
 
-    // Call server-side enhance endpoint (keeps API key secure)
-    const res = await fetch('/api/enhance', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ text, systemPrompt })
-    });
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    const data = await res.json();
-    improvedText = data.text || "";
-
-    if (improvedText && improvedText !== text) {
-      ta.value = improvedText.trim();
-      // trigger simple input event to update counts if existing
-      if (window.handleInput) window.handleInput();
-      notify("Промпт улучшен");
-    } else {
-      notify("AI enhance пока не настроен — задайте GROQ_API_KEY в .env", "warn");
-    }
+    improvedText = "";
+    // If we had a Google API key, we could use callGemini here, but for now we follow the user's request to detach Groq.
+    notify("AI-улучшение через GROQ отключено", "warn");
   } catch (e) {
     console.error(e);
     notify("AI Error: " + e.message, "err");
@@ -3422,70 +3407,6 @@ async function callGroq(prompt, key) {
 /* ===== SCRIPT TAG SPLIT ===== */
 
 
-// =============================================
-// N8N INTEGRATION
-// =============================================
-document.getElementById("sendToN8nBtn").addEventListener("click", async () => {
-  const webhookUrl = document.getElementById("n8nWebhookUrl").value.trim();
-  if (!webhookUrl) {
-    alert("Пожалуйста, введите URL вебхука n8n.");
-    return;
-  }
-
-  const btn = document.getElementById("sendToN8nBtn");
-  const originalText = btn.innerHTML;
-  btn.innerHTML = "⏳ Отправка...";
-  btn.disabled = true;
-
-  try {
-    // Get current state
-    const promptText = document.getElementById("promptOutput").innerText;
-    const jsonPayload = buildJson();
-
-    const payload = {
-      timestamp: new Date().toISOString(),
-      prompt: promptText,
-      data: jsonPayload
-    };
-
-    const response = await fetch(webhookUrl, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload)
-    });
-
-    if (response.ok) {
-      btn.innerHTML = "✅ Отправлено!";
-      // Save webhook for next time
-      localStorage.setItem("n8n_webhook_url", webhookUrl);
-      setTimeout(() => {
-        btn.innerHTML = originalText;
-        btn.disabled = false;
-      }, 2000);
-    } else {
-      throw new Error(`Status: ${response.status}`);
-    }
-  } catch (error) {
-    console.error("N8N Error:", error);
-    alert("Ошибка отправки в n8n: " + error.message);
-    btn.innerHTML = "❌ Ошибка";
-    setTimeout(() => {
-      btn.innerHTML = originalText;
-      btn.disabled = false;
-    }, 3000);
-  }
-});
-
-// Load saved webhook URL
-const savedWebhookN8N = localStorage.getItem("n8n_webhook_url");
-if (savedWebhookN8N) {
-  document.getElementById("n8nWebhookUrl").value = savedWebhookN8N;
-}
-
-// Auto-save on input
-document.getElementById("n8nWebhookUrl").addEventListener("input", (e) => {
-  localStorage.setItem("n8n_webhook_url", e.target.value);
-});
 
 // Export to window for prompt_engine.js
 window.buildFlatPrompt = typeof buildFlatPrompt !== "undefined" ? buildFlatPrompt : null;
